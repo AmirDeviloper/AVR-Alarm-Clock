@@ -1,0 +1,109 @@
+#include <mega32.h>
+#include <delay.h>
+#include <stdio.h>
+#include <alcd.h>
+#include <stdbool.h>
+
+char buffer[20];
+char buffer_2[20];
+
+// _clock[0] = seconds
+// _clock[1] = minutes
+// _clock[2] = hours
+int _clock[3]= {0, 0, 0};
+        
+// MAX_VALUES[0] = MAX seconds
+// MAX_VALUES[1] = MAX minutes
+// MAX_VALUES[2] = MAX hours
+
+
+int min = 0;
+int hour = 0;
+
+
+
+interrupt [EXT_INT0] void EXT_INT0_isr(void)
+{
+    if(min < 59)
+        min++;
+    
+    else
+        min = 0;
+}
+
+interrupt [EXT_INT1] void EXT_INT1_isr(void)
+{
+    if(hour < 23)
+        hour++;
+    
+    else
+        hour = 0;
+}
+
+const int MAX_VALUES[3] = {60 ,60 ,25}; 
+
+bool check_clock (int index)
+{
+    return _clock[index] == MAX_VALUES[index];
+}
+void set_zero(int index)
+{
+    _clock[index] = 0;
+}
+void increase_clock(int index)
+{
+     _clock[index]++;
+}
+
+void main (void)
+{
+    //LCD PORT - output
+    PORTA=0X00; 
+    DDRA=0XFF;
+    PORTD=0X0C;
+    DDRD=0X00;
+    
+    GICR|=0XC0;
+    MCUCR=0X0A;
+    MCUCSR=0X00;
+    GIFR=0XC0;
+    
+    lcd_init(20);
+    lcd_clear();
+    
+    #asm("sei")
+    while(1)
+    {    
+        delay_ms(1000);
+        increase_clock(0);
+        if(check_clock(0))
+        {
+             increase_clock(1);
+             set_zero(0);
+        }
+        if(check_clock(1))
+        {   
+            increase_clock(2);
+            set_zero(1);
+        }
+            
+        if(check_clock(2))
+        {
+            set_zero(0);
+            set_zero(1);
+            set_zero(2);
+        }
+        
+        lcd_clear();
+        lcd_gotoxy(4,0);
+        sprintf(buffer,"%02d:%02d:%02d", _clock[2], _clock[1], _clock[0]);
+        lcd_puts(buffer);                                                 
+        
+        lcd_gotoxy(4,1);
+        sprintf(buffer_2, "%02d:%02d:00", hour, min);
+        lcd_puts(buffer_2);
+        delay_ms(10);
+        
+        PORTA.3 = (_clock[2] - hour == 0 && _clock[1] - min == 0);
+    }
+}  
