@@ -1,6 +1,6 @@
 # ⏰ AVR-Based Alarm Clock (CodeVision + Proteus)
 
-> 🕒 **Note:** This project was originally developed in **May 2020** and uploaded to GitHub in **October 2025** for portfolio and documentation purposes.
+> 🕒 **Note:** This project was originally developed in **November 2020** and uploaded to GitHub in **October 2025** for portfolio and documentation purposes.
 
 This embedded system project implements a functional **alarm clock** using **AVR microcontrollers**, programmed in **C** with **CodeVisionAVR IDE** and fully simulated in **Proteus**. It demonstrates key concepts in microcontroller programming, peripheral interfacing, and real-time embedded logic.
 
@@ -22,7 +22,7 @@ To build and simulate this project, you’ll need:
 - 🧪 Proteus Design Suite (v8.0 or newer recommended)  
 - 🔩 AVR microcontroller (ATmega16 or ATmega32)  
 - 📟 16x2 LCD module  
-- 🔔 Buzzer and push buttons  
+- 🔔 LED Buzzer and push buttons  
 - 🧩 Basic knowledge of C and AVR registers
 
 ---
